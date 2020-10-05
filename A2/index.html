@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="cool.js"></script>
+    <title>Remember Me?</title>
+    <style>
+      .flip-card {
+        background-color: transparent;
+        width: 300px;
+        margin-top:10px;
+        height: 140px;
+        max-width: 100%;
+        max-height: 100%;
+        perspective: 1000px;
+      }
+
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.5s;
+        transform-style: preserve-3d;
+      }
+
+      .flip-card:active .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+
+      .flip-card-front {
+        width: 300px;
+        height: 140px;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+        background-color:#548f51;
+        color: white;
+      }
+
+      .flip-card-back-correct {
+        width: 300px;
+        height: 139px;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+        background-color:#548f51;
+        color: white;
+        transform: rotateY(180deg);
+      }
+      .flip-card-back-wrong {
+        width: 300px;
+        height: 139px;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+        background-color:#d9534f;
+        color: white;
+        transform: rotateY(180deg);
+      }
+    </style>
+
+  </head>
+  <body style="background-color: rgba(126, 237, 154, 0.8);">
+      <div class="jumbotron" style="background-color:white; margin:200px; text-align: center;">
+        <div class="alert alert-success" style="display:none;" role="alert" id="instruction">
+          <h2 class="alert-heading" style="font-size:2vw;">Who is he/she? Click and hold on the choice you made to see if it is correct!   Don't worry if it's wrong, go try again!</h2>
+        </div>
+        <div class="alert alert-success" role="alert" id="hello">
+          <h1 class="alert-heading" >Hi there, those upcoming pictures are photos of your relatives, see if you recognize them!</h1>
+          <h1 class="alert-heading" >Whenever you're ready, click on start!</h1>
+        </div>
+        <div class="alert alert-success" style="display:none;" role="alert" id="end">
+          <h1 class="alert-heading" >Congratulations!</h1>
+          <h1 class="alert-heading" >You're doing great. All of them are done perfectly.</h1>
+          <h1 class="alert-heading" >Wanna try again? Click on the button below.</h1>
+        </div>
+        <button type="button" id="startButton" class="btn btn-success" style="width:400px; height:200px; max-width: 100%;" onclick="start(0)"><h1 style="font-size:5vw;">Start</h1></button>
+        <div class="row" style="display:none;" id="flashcard1">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%; ">
+              <img src="photos/brotherDavid.jpg"  style="object-fit: contain;  width: 100%; height: 100%; border-radius: 10px;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Brother David</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Cousin Mike</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Brother Cole</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Cousin Peter</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="row" style="display:none;" id="flashcard2">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/DaughterInLawNancy.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter-In-Law Nancy</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Grace</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Niece Hailey</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Victoria</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="display:none;" id="flashcard3">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/DaughterVictoria.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter-In-Law Nancy</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Grace</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Niece Hailey</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Victoria</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="row" style="display:none;" id="flashcard4">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/grandchildLucy.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Lily</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Rex</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Chris</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Lucy</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="display:none;" id="flashcard5">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/grandchildRex.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Lily</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Rex</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Chris</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Grandchild Lucy</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="display:none;" id="flashcard6">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/nieceHailey.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter-In-Law Nancy</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Grace</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Niece Hailey</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Daughter Victoria</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="display:none;" id="flashcard7">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/nephewVince.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Newphew Vince</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Son Janet</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Son Kevin</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Newphew Jason</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row" style="display:none;" id="flashcard8">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/sonJanet.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Newphew Vince</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Son Janet</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Son Kevin</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Newphew Jason</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row" style="display:none;" id="flashcard9">
+          <div class="col-sm d-flex justify-content-center">
+            <div style=" margin-top:50px; width: 690px;height: 450px;  max-width:100%; max-height:100%;">
+              <img src="photos/sisterTancy.jpg"  style="object-fit: contain;  border-radius: 10px;  width: 100%; height: 100%;"></img>
+            </div>
+          </div>
+          <div class="col-sm d-flex justify-content-center">
+            <div class="list-group">
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Sister Kitty</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Sister Tancy</h1>
+                  </div>
+                  <div class="flip-card-back-correct">
+                    <h1 >Yes!</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Sister-In-Law Laura</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <h1 >Sister Jen</h1>
+                  </div>
+                  <div class="flip-card-back-wrong">
+                    <h1 >Oops Nope</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <hr id="hrule" style=" margin-top:20px; margin-bottom: 20px;border: 0;clear:both;display:none;width: 90%;background-color:rgb(211,211,211);height: 5px;"></hr>
+
+        <div class="row" style="text-align:center; display:none;" id="control">
+          <div class="col">
+            <button type="button" id="backB" class="btn btn-success disabled" style="width:200px; height:100px; max-width: 100%;" onclick="back()"><h1 >Back</h1></button>
+          </div>
+          <div class="col">
+            <button type="button" id="nextB" class="btn btn-success" style="width:200px; height:100px; max-width: 100%;" onclick="next()"><h1 >Next</h1></button>
+            <button type="button" id="finishB" class="btn btn-success" style="display:none; width:200px; height:100px; max-width: 100%;" onclick="finish()"><h1 >Finish</h1></button>
+
+          </div>
+          <button type="button" id="restartB" class="btn btn-success" style="display:none; width:200px; height:100px; max-width: 100%;" onclick="start(1)"><h1 >Go</h1></button>
+        </div>
+    </div>
+
+
+  </body>
+
+
+</html>
