@@ -1,0 +1,15 @@
+utterances:
+
+
+"Instructions"
+"Repeat"
+"Information about City Hall"
+"Information about McMaster University"
+"Show arenas"
+"Show beaches"
+"Show firestations"
+"Show libraries"
+"Show museums"
+"Show waterfalls"
+"Show toursim points of interest"
+"Clear map"
