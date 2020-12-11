@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tourism Hamilton Application</title>
+  <style>p { color: white; font-size: 24px; }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+</head>
+<body style="background-color:#1b1b1b;">
+  <div class="jumbotron" id="jumbo"style="background-color:#1b1b1b; text-align:center; margin:200px;">
+    <h1 style="font-size:50px;color:white;">Click on the start button to activate the virtual guide of your trip!<br/> Have a good time exploring! &#128521;</h1>
+    <button id="start" class="btn btn-light" style="width:400px; height:200px; margin-top:80px;"><h1 style="font-size:50px;">Start</h1></button>
+  </div>
+  <div class="row" id="window"style="display:none;">
+    <div class="col align-content-center">
+      <div id="myMap" style="width:1120px;height:1120px; margin: 40px 40px 40px 40px;"></div>
+    </div>
+    <div class="col align-content-center">
+      <div style="width:700px; padding: 0px 0px 0px 0px; margin:40px 40px 20px 20px;">
+        <div class="alert alert-light" role="alert">
+          <div class="alert alert-dark" role="alert">
+            <h1>Instructions</h1>
+          </div>
+          <h2><b>&bull; "Information about ..."</b> to get information about historical spots &#127984;</h2>
+          Mcmaster Univeristy <br />
+          City Hall <br />
+          <h2><b> &bull; "Show ..."</b> to set map pins and get locations of your interest &#128204;</h2>
+          arenas<br />
+          beaches<br />
+          firestations<br />
+          libraries<br />
+          museums<br />
+          waterfalls<br />
+          tourism points of interest<br />
+          <h2><b> &bull; "Clear Map"</b> to set map pins and get locations of your interest</h2>
+        </div>
+        <div class="alert alert-light" style="height:500px;" role="alert">
+          <div class="alert alert-dark" role="alert">
+            <h1>Views</h1>
+          </div>
+           <span id="output"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load in the annyang library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+
+  <!--
+    Load in fire station data obtained from this data set:
+    https://open.hamilton.ca/datasets/dbb028cd6bcc4b218c607952b760fd04_5
+
+    This JavaScript (JSON) data was obtained by clicking on APIs -> GeoJSON,
+    copying the URL into the browser and hitting enter, I downloaded the
+    file, saved it as firestations.js, and added "var firestations = " at
+    the top so I can access the object with that variable name in this script.
+  -->
+  <script src="firestations.js"></script>
+
+  <!--- The library location data was obtained in the same way... -->
+  <script src="libraries.js"></script>
+
+  <script src="TPI.js"></script>
+  <script src="waterfall.js"></script>
+  <script src="museum.js"></script>
+  <script src="beach.js"></script>
+  <script src="arena.js"></script>
+  <script>
+
+  // Welcome the user after they click the start button
+  document.getElementById("start").onclick = function()
+  {
+    document.getElementById("jumbo").style.display = "none";
+    document.getElementById("window").style.display = "flex";
+    var synth = window.speechSynthesis;
+    var utterText = "Welcome to Hamilton! I am the virtual guide for your trip, and here to help you better exploring Hamilton. The instructions are listed on the right. You can ask me to introduce instructions by saying instructions. Please always tell me what you want me to do for you after my speaking! Happy Exploring!";
+    var utterThis = new SpeechSynthesisUtterance(utterText);
+    utterThis.pitch = 1.0;
+    utterThis.rate = 0.9;
+    synth.speak(utterThis);
+  }
+
+  if (annyang) {
+
+    // Commands are defined as keys and values in an object, the key is the
+    // text for the command, and the value is callback function (i.e. event
+    // handler) to call for the command
+    var commands = {
+
+
+      // If "information about X" is uttered, we show on the page "Here is some
+      // information about X".
+      "information about *place" :
+      function(place)
+      {
+        if(place == "McMaster University"){
+          var synth = window.speechSynthesis;
+          var utterText = "McMaster University (McMaster or Mac) is a public research university in Hamilton, Ontario, Canada. The main McMaster campus is on 121 hectares of land near the residential neighbourhoods of Ainslie Wood and Westdale, adjacent to the Royal Botanical Gardens. It operates six academic faculties: the DeGroote School of Business, Engineering, Health Sciences, Humanities, Social Science, and Science. It is a member of the U15, a group of research-intensive universities in Canada. The university bears the name of William McMaster, a prominent Canadian senator and banker who bequeathed C$900,000 to its founding. It was incorporated under the terms of an act of the Legislative Assembly of Ontario in 1887, merging the Toronto Baptist College with Woodstock College. It opened in Toronto in 1890. Inadequate facilities and the gift of land in Hamilton prompted its relocation in 1930.The Baptist Convention of Ontario and Quebec controlled the university until it became a privately chartered, publicly funded non-denominational institution in 1957. McMaster University has over 27,000 undergraduate and over 4,000 post-graduate students. Alumni and former students reside across Canada and in 139 countries. Its athletic teams are known as the Marauders, and are members of U Sports. Notable alumni include government officials, academics, business leaders, Rhodes Scholars, Gates Cambridge Scholars, and Nobel laureates." ;
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          var img = document.createElement("img");
+          img.src = "mcmaster.jpg";
+          img.style.fill = "contain";
+          img.style.width = "600px";
+          document.getElementById("output").innerHTML = "";
+          var src = document.getElementById("output");
+          src.appendChild(img);
+          map.entities.push(
+            new Microsoft.Maps.Pushpin(
+              new Microsoft.Maps.Location(
+                // use the latitude & longitude data for the pushpin position
+                43.2580,
+                -79.9180
+              ),
+              // use the library name for the label
+              {title: "McMaster Univerisity"}
+            ));
+          }
+          else if (place == "City Hall"){
+            var synth = window.speechSynthesis;
+            var utterText = "The Hamilton, Ontario City Council is the governing body of the City of Hamilton, Ontario, Canada. Since November 21, 1960, Council has met at Hamilton City Hall at 71 Main Street West. The current council consists of the mayor plus fifteen councillors, one elected from each of the city's wards. The incumbent council was elected in a Hamilton municipal election on October 22, 2018." ;
+            var utterThis = new SpeechSynthesisUtterance(utterText);
+            utterThis.pitch = 1.0;
+            utterThis.rate = 0.9;
+            synth.speak(utterThis);
+            var img = document.createElement("img");
+            img.src = "cityhall.jpg";
+            img.style.fill = "contain";
+            img.style.height = "350px";
+            document.getElementById("output").innerHTML = "";
+            var src = document.getElementById("output");
+            src.appendChild(img);
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  43.2555,
+                  -79.87329
+                ),
+                // use the library name for the label
+                {title: "Hamilton City Hall"}
+              ));
+          }
+          else{
+            var synth = window.speechSynthesis;
+            var utterText = "Sorry, " + place + " is not supported, try using McMaster University or City Hall" ;
+            var utterThis = new SpeechSynthesisUtterance(utterText);
+            utterThis.pitch = 1.0;
+            utterThis.rate = 0.9;
+            synth.speak(utterThis);
+
+          }
+      },
+
+      // If "show firestations" or "show libraries" are uttered, the map will
+      // be populated with pushpins for firestations or libraries
+      //
+      // We use the firestations.js and libraries.js data above to do so, note
+      // that we know how to access the data structure be examining the data
+      // structure... so we can see for example that firestations.features
+      // contains an array of objects with firestation data, and we can see
+      // that firestations.features[i].properties contains latitude, longitude
+      // and name data.
+      //
+      // You could use a tool like this to help you visualize the data:
+      //    http://jsonviewer.stack.hu/
+      //
+      "show *type":
+      function(type)
+      {
+        // if type includes "fire" we assume the user wants to see firestations
+        if (type.includes("fire"))
+        {
+          // loop through the array of firestations in the firestations.js data
+          for (i = 0; i < firestations.features.length; i++)
+          {
+            // add a pushpin to the map for each firestation
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  firestations.features[i].properties.LATITUDE,
+                  firestations.features[i].properties.LONGITUDE
+                ),
+                // use the firestation name for the label
+                {title: firestations.features[i].properties.NAME}
+              ));
+          }
+        }
+        // if type includes "libraries" we assume user wants to see libraries
+        else if (type.includes("libraries"))
+        {
+          // loop through the array of libraries in the libraries.js data
+          for (i = 0; i < libraries.features.length; i++)
+          {
+            // add a pushpin to the map for each library
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  libraries.features[i].properties.LATITUDE,
+                  libraries.features[i].properties.LONGITUDE
+                ),
+                // use the library name for the label
+                {title: libraries.features[i].properties.NAME}
+              ));
+          }
+        }
+        else if (type.includes("tourism"))
+        {
+          // loop through the array of TPI in the TPI.js data
+          for (i = 0; i < TPI.features.length; i++)
+          {
+            // add a pushpin to the map for each TPI
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  TPI.features[i].properties.LATITUDE,
+                  TPI.features[i].properties.LONGITUDE
+                ),
+                // use the TPI name for the label
+                {title: TPI.features[i].properties.TITLE}
+              ));
+          }
+        }
+
+        else if (type.includes("arenas"))
+        {
+          // loop through the array of libraries in the arena.js data
+          for (i = 0; i < arena.features.length; i++)
+          {
+            // add a pushpin to the map for each arena
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  arena.features[i].properties.LATITUDE,
+                  arena.features[i].properties.LONGITUDE
+                ),
+                // use the arena name for the label
+                {title: arena.features[i].properties.NAME}
+              ));
+          }
+        }
+
+
+        else if (type.includes("beaches"))
+        {
+          // loop through the array of libraries in the beach.js data
+          for (i = 0; i < beach.features.length; i++)
+          {
+            // add a pushpin to the map for each beach
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  beach.features[i].properties.LATITUDE,
+                  beach.features[i].properties.LONGITUDE
+                ),
+                // use the beach name for the label
+                {title: beach.features[i].properties.NAME}
+              ));
+          }
+        }
+
+
+
+        else if (type.includes("museums"))
+        {
+          // loop through the array of museums in the museum.js data
+          for (i = 0; i < museum.features.length; i++)
+          {
+            // add a pushpin to the map for each museum
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  museum.features[i].properties.LATITUDE,
+                  museum.features[i].properties.LONGITUDE
+                ),
+                // use the museum name for the label
+                {title: museum.features[i].properties.NAME}
+              ));
+          }
+        }
+
+
+        else if (type.includes("waterfalls"))
+        {
+          // loop through the array of waterfalls in the waterfall.js data
+          for (i = 0; i < waterfalls.features.length; i++)
+          {
+            // add a pushpin to the map for each waterfall
+            map.entities.push(
+              new Microsoft.Maps.Pushpin(
+                new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  waterfalls.features[i].properties.LATITUDE,
+                  waterfalls.features[i].properties.LONGITUDE
+                ),
+                // use the waterfall name for the label
+                {title: waterfalls.features[i].properties.NAME}
+              ));
+          }
+        }
+        else{
+          var synth = window.speechSynthesis;
+          var utterText = "Sorry, this type is not supported, try using arenas, beaches, firestations, libraries, museums, waterfalls, or tourism points of interest please." ;
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+
+        }
+      },
+
+      // If "clear map" is uttered all pushpins are removed from the map
+      "clear map" :
+      function()
+      {
+        // Code to remove all pushpins is taken directly from the API docs:
+        // https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/deletepushpins
+        for (i = map.entities.getLength() - 1; i >= 0; i--) {
+          var pushpin = map.entities.get(i);
+          if (pushpin instanceof Microsoft.Maps.Pushpin) {
+            map.entities.removeAt(i);
+          }
+        }
+      },
+
+      // Any other utterance will be caught by this case, and we use the
+      // Bing Maps geolocation service to find a latitude and longitude
+      // position based on the utterance:
+      //  https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/searchbyaddress#JS
+      // We then place a pushpin on the map at that location.
+      //
+      // So if we say "Dundas, Ontario" or "Toronto, Ontario" it will
+      // attempt to find the location and put a pushpin on the map there
+
+
+
+      //additional command
+      "instructions":
+      function(){
+        var synth = window.speechSynthesis;
+        var utterText = "You can ask me information about historical spots such as City Hall and McMaster University. For example, you can say 'Information about McMaster University'. You can also ask me to show map pins of locations of your interest including arenas, beaches, firestations, libraries, museums, waterfalls, and tourism points of interest. For example, you can say 'show beaches'. To clear map, just say 'clear map'! I can repeat instructions if you say 'repeat'.";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+      },
+
+
+      "repeat" :
+      function()
+      {
+        var synth = window.speechSynthesis;
+        var utterText = "You can ask me information about historical spots such as City Hall and McMaster University. For example, you can say 'Information about McMaster University'. You can also ask me to show map pins of locations of your interests including arenas, beaches, firestations, libraries, museums, waterfalls, and tourism points of interest. For example, you can say 'show beaches'. To clear map, just say 'clear map'! I can repeat instructions for you if you say 'repeat'.";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+
+},
+    };
+
+    // Add our commands to annyang
+    annyang.addCommands(commands);
+
+    // Start listening. You can call this here, or attach this call to an event, button, etc.
+    annyang.start({ autoRestart: true, continuous: true });
+  }
+
+
+  // Loads the map, called after Bing map library finishes loading
+  function loadmap()
+  {
+    // Create a map centered on Hamilton, Ontario
+    map = new Microsoft.Maps.Map(document.getElementById("myMap"),
+      {
+        center: new Microsoft.Maps.Location(43.2557, -79.8711),
+        // we could set additional options when we create the map...
+        // mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+        // zoom: 12
+      });
+
+    // Load the search manager that allows us to search for locations
+    // (lat and long positions) based on an address, e.g. Toronto, Ontario
+    Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+      searchManager = new Microsoft.Maps.Search.SearchManager(map);
+    });
+  }
+  </script>
+  <script src="https://www.bing.com/api/maps/mapcontrol?key=Ao9pr871PkWBHGRHO0L9f_kuQRMt5jgnmM-oQ8i0e6Ll-8DNNEgrcbiHr_wjaKq4&callback=loadmap" async defer></script>
+
+</body>
+</html>
