@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VUI Form Input Example</title>
+    <style> p, li {font-size: 28px;}</style>
+  </head>
+  <body>
+    <label for="firstname">First Name: </label>
+    <input type="text" id="firstname"> <br />
+    <label for="lastname">Last Name: </label>
+    <input type="text" id="lastname"> <br />
+    <button id="submit">Submit</button> <br />
+    <span id="output"></span>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+  <script>
+
+    // Recognize the commands for firstname and lastname
+    if (annyang) {
+      var commands = {
+        "first name *name": function(name)
+        {
+          document.getElementById("firstname").value = name;
+        },
+        "last name *name": function(name)
+        {
+          document.getElementById("lastname").value = name;
+        },
+      };
+    
+      annyang.addCommands(commands);
+      annyang.start({ autoRestart: true, continuous: true });
+    }
+
+    // check if first name is john and last name is smith, report success if so
+    document.getElementById("submit").onclick = function(){
+      if (document.getElementById("firstname").value == "John" && 
+          document.getElementById("lastname").value == "Smith") {
+        document.getElementById("output").innerHTML = "success";
+      } 
+      else document.getElementById("output").innerHTML = "failure";
+    }
+
+  </script>
+  </body>
+</html>
